@@ -9,10 +9,10 @@ const App = () => {
     fetch("https://dummyjson.com/products")
       .then(res => res.json())
       .then(json => {
-        if (json && Object.keys(json).length > 0) {
+        if (json && json.products && json.products.length > 0) {
           setTimeout(() => setData(json), 300);
         } else {
-          setData("No data");
+          setTimeout(() => setData([]), 300);
         }
       })
       .catch(err => setError("An error occurred: " + err.message));
@@ -22,13 +22,15 @@ const App = () => {
     <div>
       {error ? (
         <p>{error}</p>
-      ) : data === "No data" ? (
-        <p>No data found</p>
       ) : data ? (
-        <>
-          <h2>Data Fetched from API</h2>
-          <pre>{JSON.stringify(data, null, 2)}</pre>
-        </>
+        Array.isArray(data) && data.length === 0 ? (
+          <pre>{JSON.stringify([])}</pre>
+        ) : (
+          <>
+            <h2>Data Fetched from API</h2>
+            <pre>{JSON.stringify(data, null, 2)}</pre>
+          </>
+        )
       ) : (
         <p>Loading...</p>
       )}
