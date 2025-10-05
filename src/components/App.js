@@ -9,15 +9,29 @@ const App = () => {
     fetch("https://dummyjson.com/products")
       .then(res => res.json())
       .then(json => {
-        setTimeout(() => setData(json), 300);
+        if (json && Object.keys(json).length > 0) {
+          setTimeout(() => setData(json), 300);
+        } else {
+          setData("No data");
+        }
       })
-      .catch(() => setError("Error fetching data"));
+      .catch(err => setError("An error occurred: " + err.message));
   }, []);
 
   return (
     <div>
-      {error && <p>{error}</p>}
-      {data && <pre>{JSON.stringify(data, null, 2)}</pre>}
+      {error ? (
+        <p>{error}</p>
+      ) : data === "No data" ? (
+        <p>No data found</p>
+      ) : data ? (
+        <>
+          <h2>Data Fetched from API</h2>
+          <pre>{JSON.stringify(data, null, 2)}</pre>
+        </>
+      ) : (
+        <p>Loading...</p>
+      )}
     </div>
   );
 };
